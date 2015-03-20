@@ -1,0 +1,17 @@
+{
+  "name": "WebCamPrj",
+  "version": "1.0.0",
+  "description": "A simple library to capture images from a users webcam using WebRTC (with options for a flash fallback)",
+  "main": "app.js",
+  "author": "Chetan Thayur (https://github.com/cthayur)",
+  "license": "ISC",
+  "dependencies": {
+    "hilary": "^2.0.0"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-copy": "^0.8.0",
+    "grunt-contrib-uglify": "^0.8.0",
+    "grunt-contrib-watch": "^0.6.1"
+  }
+}
