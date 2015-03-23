@@ -3,21 +3,19 @@
 
     container.register({
         name: "CamCapture",
-        dependencies: ["ICamCaptureSettings", "CamCaptureRtc"],
-        factory: function (ICamCaptureSettings, CamCaptureRtc) {
-            var CamCapture;
-
-            CamCapture = function (options) {
+        dependencies: ["ICamCaptureSettings", "CamCaptureRtc", "CamCaptureFlash"],
+        factory: function (ICamCaptureSettings, CamCaptureRtc, CamCaptureFlash) {
+            return function (options) {
                 this.name = "CamCapture";
 
                 var settings = new ICamCaptureSettings(options);
 
-                if (settings.webRtcAvailable) {
+                if (settings.forceFlash || settings.flashRequired) {
+                    return new CamCaptureFlash(settings);
+                } else {
                     return new CamCaptureRtc(settings);
                 }
             };
-
-            return CamCapture;
         }
     });
 }(window.camCaptureContainer));

@@ -3,8 +3,8 @@
 
     container.register({
         name: "CamCaptureRtc",
-        dependencies: ["ICamCaptureSettings", "ICamCapture"],
-        factory: function (ICamCaptureSettings, ICamCapture) {
+        dependencies: ["ICamCapture"],
+        factory: function (ICamCapture) {
             var $self = {},
                 localStream = {};
 
@@ -28,13 +28,16 @@
                 //When the user clicks accept for accessing the web cam
                 rtcAccessSuccess = function (stream) {
                     localStream = stream;
+
                     if (navigator.mozGetUserMedia) {
                         videoElem.src = window.URL.createObjectURL(stream);
                     } else {
                         var vendorURL = window.URL || window.webkitURL;
                         videoElem.src = vendorURL.createObjectURL(stream);
                     }
+
                     videoElem.play();
+
                     if (settings.onLoaded && typeof settings.onLoaded === "function") {
                         settings.onLoaded();
                     }
@@ -58,9 +61,11 @@
             $self.capture = function (callback) {
                 var self = this,
                     data,
-                    canvas = $($("<div/>").html(self.settings.getNewCanvas(self.settings.displayWidth, self.settings.displayHeight))).children()[0];
+                    canvas;
 
+                canvas = $($("<div/>").html(self.settings.getNewCanvas(self.settings.displayWidth, self.settings.displayHeight))).children()[0];
                 canvas.getContext("2d").drawImage(self.videoElem, 0, 0, self.settings.displayWidth, self.settings.displayHeight);
+
                 data = canvas.toDataURL("image/png");
 
                 if (callback && typeof callback === "function") {

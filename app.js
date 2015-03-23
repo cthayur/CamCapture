@@ -4,14 +4,18 @@
     var i,
         interval,
         options = {
+            //forceFlash: true,
             videoSelector: '#rtcVideo',
+            flashVideoSelector: "#flashVideo",
             displayWidth: 320,
             displayHeight: 240,
             delay: {
-                rtc: 200
+                rtc: 200,
+                flash: 50
             },
             frames: {
-                rtc: 30
+                rtc: 30,
+                flash: 30
             }
         },
         rtc = new CamCapture(options);
@@ -36,10 +40,10 @@
                 $('#loopImage').attr('src', data[i]);
                 i += 1;
 
-                if (i === (options.frames.rtc - 1)) {
+                if (i === (options.frames.flash - 1)) {
                     i = 0;
                 }
-            }, options.delay.rtc);
+            }, 200);
         });
     });
 

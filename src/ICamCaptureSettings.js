@@ -12,6 +12,7 @@
 
                 self.webRtcAvailable = navigator.getMedia ? true : false;
                 self.flashRequired = !self.webRtcAvailable;
+                self.forceFlash = options.forceFlash || false;
 
                 self.captureParameters = {
                     delay: {
@@ -24,7 +25,7 @@
                     }
                 };
 
-                self.relativeSwfLocation = options.relativeSwfLocation || "jscam_canvas_only.swf";
+                self.relativeSwfLocation = options.relativeSwfLocation || "/src/jscam_canvas_only.swf";
                 self.canvasWidth = options.canvasWidth || 320;
                 self.canvasHeight = options.canvasHeight || 240;
                 self.displayWidth = options.displayWidth || 320;
@@ -35,6 +36,7 @@
                 };
 
                 self.videoSelector = options.videoSelector;
+                self.flashVideoSelector = options.flashVideoSelector;
                 self.onLoaded = options.onLoaded;
                 self.camAccessError = options.camAccessError;
             };
