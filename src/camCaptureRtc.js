@@ -38,8 +38,8 @@
 
                     videoElem.play();
 
-                    if (settings.onLoaded && typeof settings.onLoaded === "function") {
-                        settings.onLoaded();
+                    if (settings.camAccessSuccess && typeof settings.camAccessSuccess === "function") {
+                        settings.camAccessSuccess();
                     }
                 };
 

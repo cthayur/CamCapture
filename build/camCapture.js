@@ -37,8 +37,8 @@
                 };
                 self.videoSelector = options.videoSelector;
                 self.flashVideoSelector = options.flashVideoSelector;
-                self.onLoaded = options.onLoaded;
-                self.camAccessError = options.camAccessError;
+                self.camAccessSuccess = options.camAccessSuccess || function() {};
+                self.camAccessError = options.camAccessError || function() {};
             };
         }
     });
@@ -96,8 +96,8 @@
                         videoElem.src = vendorURL.createObjectURL(stream);
                     }
                     videoElem.play();
-                    if (settings.onLoaded && typeof settings.onLoaded === "function") {
-                        settings.onLoaded();
+                    if (settings.camAccessSuccess && typeof settings.camAccessSuccess === "function") {
+                        settings.camAccessSuccess();
                     }
                 };
                 rtcAccessError = function(err) {
@@ -182,12 +182,11 @@
                     onCapture: function() {
                         webcam.save();
                     },
-                    debug: function(type, string) {
-                        settings.camAccessError(type, string);
-                    },
-                    onLoad: function() {
-                        if (settings.onLoaded) {
-                            settings.onLoaded();
+                    debug: function(type, val) {
+                        if (type === "notify" && val === "Camera started") {
+                            settings.camAccessSuccess();
+                        } else if (type === "notify" && val === "Camera stopped") {
+                            settings.camAccessError();
                         }
                     }
                 });

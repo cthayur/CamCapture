@@ -1,10 +1,11 @@
+/*jslint devel: true*/
 (function (CamCapture, $) {
     "use strict";
 
     var i,
         interval,
         options = {
-            //forceFlash: true,
+            forceFlash: true,
             videoSelector: '#rtcVideo',
             flashVideoSelector: "#flashVideo",
             displayWidth: 320,
@@ -16,6 +17,12 @@
             frames: {
                 rtc: 30,
                 flash: 30
+            },
+            camAccessSuccess: function () {
+                console.log('user accepted');
+            },
+            camAccessError: function () {
+                alert('user denied cam access');
             }
         },
         rtc = new CamCapture(options);

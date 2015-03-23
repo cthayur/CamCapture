@@ -37,8 +37,8 @@
 
                 self.videoSelector = options.videoSelector;
                 self.flashVideoSelector = options.flashVideoSelector;
-                self.onLoaded = options.onLoaded;
-                self.camAccessError = options.camAccessError;
+                self.camAccessSuccess = options.camAccessSuccess || function () {};
+                self.camAccessError = options.camAccessError || function () {};
             };
         }
     });
