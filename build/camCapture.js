@@ -1,4 +1,4 @@
-/*! WebCamPrj 2015-03-20 */
+/*! WebCamPrj 2015-03-23 */
 
 (function(Hilary) {
     "use strict";
@@ -45,14 +45,43 @@
     });
 })(window.camCaptureContainer, window.navigator);
 
+(function(container) {
+    "use strict";
+    container.register({
+        name: "ICamCapture",
+        dependencies: [],
+        factory: function() {
+            return function(implementation) {
+                if (typeof implementation.ctor !== "function") {
+                    throw new Error("Constructor required on an implementation");
+                }
+                if (typeof implementation.capture !== "function") {
+                    throw new Error("capture method required on an implementation");
+                }
+                if (typeof implementation.captureBurst !== "function") {
+                    throw new Error("captureBurst method required on an implementation");
+                }
+                if (typeof implementation.destroy !== "function") {
+                    throw new Error("destroy method required on an implementation");
+                }
+                var ICamCapture = implementation.ctor;
+                ICamCapture.prototype.capture = implementation.capture;
+                ICamCapture.prototype.captureBurst = implementation.captureBurst;
+                ICamCapture.prototype.destroy = implementation.destroy;
+                return ICamCapture;
+            };
+        }
+    });
+})(window.camCaptureContainer);
+
 (function(container, $, navigator) {
     "use strict";
     container.register({
         name: "CamCaptureRtc",
-        dependencies: [ "CamCaptureSettings" ],
-        factory: function(settings) {
-            var WebRtcCapture, localStream = {};
-            WebRtcCapture = function(options) {
+        dependencies: [ "CamCaptureSettings", "ICamCapture" ],
+        factory: function(settings, ICamCapture) {
+            var self = {}, localStream = {};
+            self.ctor = function(options) {
                 this.destroy();
                 this.displayWidth = options.displayWidth;
                 this.displayHeight = options.displayHeight;
@@ -83,7 +112,7 @@
                     audio: false
                 }, rtcAccessSuccess, rtcAccessError);
             };
-            WebRtcCapture.prototype.capture = function(callback) {
+            self.capture = function(callback) {
                 var data, canvas = $($("<div/>").html(settings.getNewCanvas(this.displayWidth, this.displayHeight))).children()[0];
                 canvas.getContext("2d").drawImage(this.videoElem, 0, 0, this.displayWidth, this.displayWidth);
                 data = canvas.toDataURL("image/png");
@@ -91,7 +120,7 @@
                     callback(data);
                 }
             };
-            WebRtcCapture.prototype.captureBurst = function(callback) {
+            self.captureBurst = function(callback) {
                 var currentInterval, i = 0, self = this, images = [];
                 currentInterval = setInterval(function() {
                     self.capture(function(data) {
@@ -106,10 +135,10 @@
                     }
                 }, self.burstDelayMs);
             };
-            WebRtcCapture.prototype.destroy = function() {
+            self.destroy = function() {
                 var temp = localStream && localStream.stop && localStream.stop();
             };
-            return WebRtcCapture;
+            return new ICamCapture(self);
         }
     });
 })(window.camCaptureContainer, window.jQuery, window.navigator);

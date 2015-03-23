@@ -5,6 +5,7 @@ module.exports = function (grunt) {
     var camCaptureFiles = [
         './src/startUp.js',
         './src/camCaptureSettings.js',
+        './src/ICamCapture.js',
         './src/camCaptureRtc.js',
         './src/camCapture.js',
         './src/camCaptureBootstrapper.js'

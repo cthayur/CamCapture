@@ -3,12 +3,12 @@
 
     container.register({
         name: "CamCaptureRtc",
-        dependencies: ["CamCaptureSettings"],
-        factory: function (settings) {
-            var WebRtcCapture,
+        dependencies: ["CamCaptureSettings", "ICamCapture"],
+        factory: function (settings, ICamCapture) {
+            var self = {},
                 localStream = {};
 
-            WebRtcCapture = function (options) {
+            self.ctor = function (options) {
                 this.destroy();
 
                 this.displayWidth = options.displayWidth;
@@ -48,7 +48,7 @@
                 }, rtcAccessSuccess, rtcAccessError);
             };
 
-            WebRtcCapture.prototype.capture = function (callback) {
+            self.capture = function (callback) {
                 var data,
                     canvas = $($("<div/>").html(settings.getNewCanvas(this.displayWidth, this.displayHeight))).children()[0];
 
@@ -60,7 +60,7 @@
                 }
             };
 
-            WebRtcCapture.prototype.captureBurst = function (callback) {
+            self.captureBurst = function (callback) {
                 var currentInterval,
                     i = 0,
                     self = this,
@@ -82,11 +82,11 @@
                 }, self.burstDelayMs);
             };
 
-            WebRtcCapture.prototype.destroy = function () {
+            self.destroy = function () {
                 var temp = localStream && localStream.stop && localStream.stop();
             };
 
-            return WebRtcCapture;
+            return new ICamCapture(self);
         }
     });
 }(window.camCaptureContainer, window.jQuery, window.navigator));
