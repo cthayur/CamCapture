@@ -1,58 +1,66 @@
-(function (container, $, navigator) {
+(function (container, $, navigator, setInterval, clearInterval) {
     "use strict";
 
     container.register({
         name: "CamCaptureRtc",
-        dependencies: ["CamCaptureSettings", "ICamCapture"],
-        factory: function (settings, ICamCapture) {
-            var self = {},
+        dependencies: ["ICamCaptureSettings", "ICamCapture"],
+        factory: function (ICamCaptureSettings, ICamCapture) {
+            var $self = {},
                 localStream = {};
 
-            self.ctor = function (options) {
-                this.destroy();
-
-                this.displayWidth = options.displayWidth;
-                this.displayHeight = options.displayHeight;
-                this.numOfImagesForBurst = options.numOfImagesForBurst || settings.captureParameters.frames.rtc;
-                this.burstDelayMs = options.burstDelayMs || settings.captureParameters.delay.rtc;
-
-                var $video = $(options.videoSelector),
+            $self.ctor = function (settings) {
+                var self = this,
+                    $video = $(settings.videoSelector),
                     videoElem = $video[0],
-                    rtcAccessSuccess = function (stream) {
-                        localStream = stream;
-                        if (navigator.mozGetUserMedia) {
-                            videoElem.src = window.URL.createObjectURL(stream);
-                        } else {
-                            var vendorURL = window.URL || window.webkitURL;
-                            videoElem.src = vendorURL.createObjectURL(stream);
-                        }
-                        videoElem.play();
-                        if (options.onLoaded && typeof options.onLoaded === "function") {
-                            options.onLoaded();
-                        }
-                    },
-                    rtcAccessError = function (err) {
-                        if (options.camAccessError && typeof options.camAccessError === "function") {
-                            options.camAccessError(err);
-                        }
-                    };
+                    rtcAccessSuccess,
+                    rtcAccessError;
 
-                this.videoElem = videoElem;
+                //Stop a current video stream if its playing
+                self.destroy();
 
-                $video.css("width", (options.displayWidth || settings.displayWidth) + "px");
-                $video.css("height", (options.displayHeight || settings.displayHeight) + "px");
+                self.settings = settings;
+                self.videoElem = videoElem;
 
+                //Set the size of the image display element
+                $video.css("width", (settings.displayWidth) + "px");
+                $video.css("height", (settings.displayHeight) + "px");
+
+                //When the user clicks accept for accessing the web cam
+                rtcAccessSuccess = function (stream) {
+                    localStream = stream;
+                    if (navigator.mozGetUserMedia) {
+                        videoElem.src = window.URL.createObjectURL(stream);
+                    } else {
+                        var vendorURL = window.URL || window.webkitURL;
+                        videoElem.src = vendorURL.createObjectURL(stream);
+                    }
+                    videoElem.play();
+                    if (settings.onLoaded && typeof settings.onLoaded === "function") {
+                        settings.onLoaded();
+                    }
+                };
+
+                //When the user clicks deny for accessing the web cam
+                rtcAccessError = function (err) {
+                    if (settings.camAccessError && typeof settings.camAccessError === "function") {
+                        settings.camAccessError(err);
+                    }
+                };
+
+                //Request access to the web cam
                 navigator.getMedia({
                     video: true,
                     audio: false
                 }, rtcAccessSuccess, rtcAccessError);
             };
 
-            self.capture = function (callback) {
-                var data,
-                    canvas = $($("<div/>").html(settings.getNewCanvas(this.displayWidth, this.displayHeight))).children()[0];
+            //Captures a single image
+            $self.capture = function (callback) {
+                var self = this,
+                    data,
+                    canvas = $($("<div/>").html(self.settings.getNewCanvas(self.settings.displayWidth, self.settings.displayHeight))).children()[0];
 
-                canvas.getContext("2d").drawImage(this.videoElem, 0, 0, this.displayWidth, this.displayWidth);
+                canvas.getContext("2d").drawImage(self.videoElem, 0, 0, self.settings.displayWidth, self.settings.displayHeight);
                 data = canvas.toDataURL("image/png");
 
                 if (callback && typeof callback === "function") {
@@ -60,7 +68,8 @@
                 }
             };
 
-            self.captureBurst = function (callback) {
+            //Captures multiple images in series
+            $self.captureBurst = function (callback) {
                 var currentInterval,
                     i = 0,
                     self = this,
@@ -72,21 +81,22 @@
                         i += 1;
                     });
 
-                    if (i === self.numOfImagesForBurst) {
+                    if (i === self.settings.captureParameters.frames.rtc) {
                         clearInterval(currentInterval);
 
                         if (callback && typeof callback === "function") {
                             callback(images);
                         }
                     }
-                }, self.burstDelayMs);
+                }, self.settings.captureParameters.delay.rtc);
             };
 
-            self.destroy = function () {
+            //Kills the access to the webcam
+            $self.destroy = function () {
                 var temp = localStream && localStream.stop && localStream.stop();
             };
 
-            return new ICamCapture(self);
+            return new ICamCapture($self);
         }
     });
-}(window.camCaptureContainer, window.jQuery, window.navigator));
+}(window.camCaptureContainer, window.jQuery, window.navigator, window.setInterval, window.clearInterval));

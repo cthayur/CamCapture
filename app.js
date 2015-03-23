@@ -1,15 +1,20 @@
-(function (CamCaptureRtc, $) {
+(function (CamCapture, $) {
     "use strict";
 
     var i,
         interval,
-        rtc = new CamCaptureRtc({
+        options = {
             videoSelector: '#rtcVideo',
             displayWidth: 320,
             displayHeight: 240,
-            numOfImagesForBurst: 30,
-            burstDelayMs: 100
-        });
+            delay: {
+                rtc: 200
+            },
+            frames: {
+                rtc: 30
+            }
+        },
+        rtc = new CamCapture(options);
 
     $('#captureBtn').click(function () {
         $('#result').html('');
@@ -31,11 +36,11 @@
                 $('#loopImage').attr('src', data[i]);
                 i += 1;
 
-                if (i === 29) {
+                if (i === (options.frames.rtc - 1)) {
                     i = 0;
                 }
-            }, 100);
+            }, options.delay.rtc);
         });
     });
 
-}(window.CamCaptureRtc, window.jQuery));
+}(window.CamCapture, window.jQuery));

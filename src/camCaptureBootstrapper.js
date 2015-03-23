@@ -3,5 +3,5 @@
 
     var CamCapture;
 
-    window.CamCaptureRtc = container.resolve("CamCaptureRtc");
+    window.CamCapture = container.resolve("CamCapture");
 }(window.camCaptureContainer));

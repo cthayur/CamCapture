@@ -3,20 +3,18 @@
 
     container.register({
         name: "CamCapture",
-        dependencies: [],
-        factory: function () {
+        dependencies: ["ICamCaptureSettings", "CamCaptureRtc"],
+        factory: function (ICamCaptureSettings, CamCaptureRtc) {
             var CamCapture;
 
             CamCapture = function (options) {
                 this.name = "CamCapture";
-            };
 
-            CamCapture.prototype.capture = function (options) {
+                var settings = new ICamCaptureSettings(options);
 
-            };
-
-            CamCapture.prototype.captureBurst = function (options) {
-                
+                if (settings.webRtcAvailable) {
+                    return new CamCaptureRtc(settings);
+                }
             };
 
             return CamCapture;
