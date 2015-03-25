@@ -15,6 +15,8 @@
                     rtcAccessSuccess,
                     rtcAccessError;
 
+                self.type = 'RTC';
+
                 //Stop a current video stream if its playing
                 self.destroy();
 

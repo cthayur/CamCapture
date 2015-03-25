@@ -34,6 +34,19 @@ module.exports = function (grunt) {
                 files: {
                     './build/camCapture.js': camCaptureFiles
                 }
+            },
+            release: {
+                options: {
+                    banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
+//                    beautify: false,
+//                    mangle: true,
+//                    compress: true,
+//                    sourceMap: false,
+//                    drop_console: false
+                },
+                files: {
+                    './build/camCapture.min.js': camCaptureFiles
+                }
             }
         },
         copy: {
@@ -59,4 +72,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.registerTask('debug', ['copy:js', 'uglify:debug']);
+    grunt.registerTask('release', ['uglify:release']);
 };

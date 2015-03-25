@@ -15,6 +15,8 @@
                     pos = 0,
                     imageInfo = {};
 
+                self.type = 'FLASH';
+
                 self.settings = settings;
 
                 resetImageInfo(imageInfo, settings);

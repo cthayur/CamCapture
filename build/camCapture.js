@@ -1,4 +1,4 @@
-/*! WebCamPrj 2015-03-23 */
+/*! CamCapture 2015-03-25 */
 
 (function(Hilary) {
     "use strict";
@@ -82,6 +82,7 @@
             var $self = {}, localStream = {};
             $self.ctor = function(settings) {
                 var self = this, $video = $(settings.videoSelector), videoElem = $video[0], rtcAccessSuccess, rtcAccessError;
+                self.type = "RTC";
                 self.destroy();
                 self.settings = settings;
                 self.videoElem = videoElem;
@@ -151,6 +152,7 @@
             var $self = {}, resetImageInfo, flashCallback;
             $self.ctor = function(settings) {
                 var self = this, pos = 0, imageInfo = {};
+                self.type = "FLASH";
                 self.settings = settings;
                 resetImageInfo(imageInfo, settings);
                 $(settings.flashVideoSelector).show();
