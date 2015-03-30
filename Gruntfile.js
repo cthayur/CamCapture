@@ -27,6 +27,20 @@ module.exports = function (grunt) {
                     beautify: true,
                     mangle: false,
                     compress: false,
+                    sourceMap: false,
+                    drop_console: false,
+                    preserveComments: 'some'
+                },
+                files: {
+                    './build/camCapture.js': camCaptureFiles
+                }
+            },
+            debugWithMap: {
+                options: {
+                    banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
+                    beautify: true,
+                    mangle: false,
+                    compress: false,
                     sourceMap: true,
                     drop_console: false,
                     preserveComments: 'some'
@@ -71,6 +85,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
 
+    grunt.registerTask('debugWithMap', ['copy:js', 'uglify:debugWithMap']);
     grunt.registerTask('debug', ['copy:js', 'uglify:debug']);
     grunt.registerTask('release', ['uglify:release']);
 };

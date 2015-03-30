@@ -1,5 +1,4 @@
 /*! CamCapture 2015-03-25 */
-
 (function(Hilary) {
     "use strict";
     window.camCaptureContainer = new Hilary();
@@ -248,4 +247,3 @@
     "use strict";
     window.CamCapture = container.resolve("CamCapture");
 })(window.camCaptureContainer);
-//# sourceMappingURL=camCapture.js.map

@@ -5,7 +5,7 @@
     var i,
         interval,
         options = {
-            forceFlash: true,
+            //forceFlash: true,
             videoSelector: '#rtcVideo',
             flashVideoSelector: "#flashVideo",
             displayWidth: 320,
@@ -15,8 +15,8 @@
                 flash: 50
             },
             frames: {
-                rtc: 30,
-                flash: 30
+                rtc: 12,
+                flash: 12
             },
             camAccessSuccess: function () {
                 console.log('user accepted');
